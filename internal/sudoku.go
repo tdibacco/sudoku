@@ -28,6 +28,9 @@ func Print(g *Grid) {
 }
 
 func Solve(g *Grid) bool {
+	if !Valid(g) {
+		return false
+	}
 	return solve(g, 0, 0)
 }
 
@@ -44,35 +47,11 @@ func solve(g *Grid, row, col int) bool {
 		return solve(g, row, col+1)
 	}
 
-outer:
 	for i := 1; i <= N; i++ {
 		val := uint8(i)
 
-		// validate row
-		for _, c := range g[row] {
-			if c == val {
-				continue outer
-			}
-		}
-
-		// validate column
-		for j := 0; j < N; j++ {
-			c := g[j][col]
-			if c == val {
-				continue outer
-			}
-		}
-
-		// validate box
-		j := int(row/3) * 3
-		k := int(col/3) * 3
-		for ji, jn := j, j+3; ji < jn; ji++ {
-			for ki, kn := k, k+3; ki < kn; ki++ {
-				c := g[ji][ki]
-				if c == val {
-					continue outer
-				}
-			}
+		if !validMove(g, row, col, val) {
+			continue
 		}
 
 		// Backtracking... Solution
@@ -89,5 +68,75 @@ outer:
 		g[row][col] = Unset
 	}
 
+	return false
+}
+
+func Valid(g *Grid) bool {
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			val := g[i][j]
+			if val == Unset {
+				continue
+			}
+			g[i][j] = Unset
+			valid := validMove(g, i, j, val)
+			g[i][j] = val
+			if !valid {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func validMove(g *Grid, row, col int, val byte) bool {
+	// validate row
+	if rowContain(g, row, val) {
+		return false
+	}
+
+	// validate column
+	if colContain(g, col, val) {
+		return false
+	}
+
+	// validate box
+	if boxContain(g, row, col, val) {
+		return false
+	}
+
+	return true
+}
+
+func rowContain(g *Grid, row int, val byte) bool {
+	for _, cell := range g[row] {
+		if cell == val {
+			return true
+		}
+	}
+	return false
+}
+
+func colContain(g *Grid, col int, val byte) bool {
+	for row := 0; row < N; row++ {
+		cell := g[row][col]
+		if cell == val {
+			return true
+		}
+	}
+	return false
+}
+
+func boxContain(g *Grid, row, col int, val byte) bool {
+	r := int(row/3) * 3
+	c := int(col/3) * 3
+	for i, m := r, r+3; i < m; i++ {
+		for j, n := c, c+3; j < n; j++ {
+			cell := g[i][j]
+			if cell == val {
+				return true
+			}
+		}
+	}
 	return false
 }
