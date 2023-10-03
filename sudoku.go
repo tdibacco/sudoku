@@ -1,4 +1,4 @@
-package sodoku
+package sudoku
 
 import "fmt"
 
@@ -9,22 +9,22 @@ const (
 
 type Grid [N][N]uint8
 
-func Print(g *Grid) {
-	for i, row := range g {
-		if i != 0 {
-			println()
-			if i%3 == 0 {
-				println()
+func Valid(g *Grid) bool {
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			val := g[i][j]
+			if val == Unset {
+				continue
 			}
-		}
-
-		for j, cell := range row {
-			if j != 0 && j%3 == 0 {
-				print("  ")
+			g[i][j] = Unset
+			valid := validMove(g, i, j, val)
+			g[i][j] = val
+			if !valid {
+				return false
 			}
-			fmt.Printf("%d  ", cell)
 		}
 	}
+	return true
 }
 
 func Solve(g *Grid) bool {
@@ -69,24 +69,6 @@ func solve(g *Grid, row, col int) bool {
 	}
 
 	return false
-}
-
-func Valid(g *Grid) bool {
-	for i := 0; i < N; i++ {
-		for j := 0; j < N; j++ {
-			val := g[i][j]
-			if val == Unset {
-				continue
-			}
-			g[i][j] = Unset
-			valid := validMove(g, i, j, val)
-			g[i][j] = val
-			if !valid {
-				return false
-			}
-		}
-	}
-	return true
 }
 
 func validMove(g *Grid, row, col int, val byte) bool {
@@ -139,4 +121,22 @@ func boxContain(g *Grid, row, col int, val byte) bool {
 		}
 	}
 	return false
+}
+
+func Print(g *Grid) {
+	for i, row := range g {
+		if i != 0 {
+			println()
+			if i%3 == 0 {
+				println()
+			}
+		}
+
+		for j, cell := range row {
+			if j != 0 && j%3 == 0 {
+				print("  ")
+			}
+			fmt.Printf("%d  ", cell)
+		}
+	}
 }
