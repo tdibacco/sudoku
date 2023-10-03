@@ -9,27 +9,12 @@ const (
 
 type Grid [N][N]uint8
 
-// Valid validate a sudoku Grid "maybe" possible to solve.
-// Deprecated: use Solve instead.
+// Valid validates a sudoku Grid without modification.
 func Valid(g *Grid) bool {
-	for i := 0; i < N; i++ {
-		for j := 0; j < N; j++ {
-			val := g[i][j]
-			if val == Unset {
-				continue
-			}
-			g[i][j] = Unset
-			valid := validMove(g, i, j, val)
-			g[i][j] = val
-			if !valid {
-				return false
-			}
-		}
-	}
-	return true
+	return Solve(clone(g))
 }
 
-// Solve attempts to solve sudoku Grid inplace returning true if valid. Otherwise, returns false if not solvable.
+// Solve solves sudoku Grid inplace and returning true if valid. Otherwise, returns false.
 func Solve(g *Grid) bool { return solve(g, 0, 0) }
 
 func solve(g *Grid, row, col int) bool {
@@ -116,6 +101,17 @@ func boxContains(g *Grid, row, col int, val byte) bool {
 		}
 	}
 	return false
+}
+
+// clone preforms a deep clone.
+func clone(g *Grid) *Grid {
+	c := new(Grid)
+	for i := 0; i < N; i++ {
+		for j := 0; j < 9; j++ {
+			c[i][j] = g[i][j]
+		}
+	}
+	return c
 }
 
 func Print(g *Grid) {
