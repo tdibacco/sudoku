@@ -9,6 +9,8 @@ const (
 
 type Grid [N][N]uint8
 
+// Valid validate a sudoku Grid "maybe" possible to solve.
+// Deprecated: use Solve instead.
 func Valid(g *Grid) bool {
 	for i := 0; i < N; i++ {
 		for j := 0; j < N; j++ {
@@ -27,6 +29,7 @@ func Valid(g *Grid) bool {
 	return true
 }
 
+// Solve attempts to solve sudoku Grid inplace returning true if valid. Otherwise, returns false if not solvable.
 func Solve(g *Grid) bool { return solve(g, 0, 0) }
 
 func solve(g *Grid, row, col int) bool {
