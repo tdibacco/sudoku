@@ -27,12 +27,7 @@ func Valid(g *Grid) bool {
 	return true
 }
 
-func Solve(g *Grid) bool {
-	if !Valid(g) {
-		return false
-	}
-	return solve(g, 0, 0)
-}
+func Solve(g *Grid) bool { return solve(g, 0, 0) }
 
 func solve(g *Grid, row, col int) bool {
 	if row == N {
@@ -54,17 +49,14 @@ func solve(g *Grid, row, col int) bool {
 			continue
 		}
 
-		// Backtracking... Solution
-
 		// set value
 		g[row][col] = val
 
-		// recursively attempt to solve the rest of the cells.
+		// recursively attempt to solve the rest of the cells
 		if solve(g, row, col+1) {
 			return true
 		}
-
-		// unset value
+		// else backtrack
 		g[row][col] = Unset
 	}
 
@@ -73,24 +65,24 @@ func solve(g *Grid, row, col int) bool {
 
 func validMove(g *Grid, row, col int, val byte) bool {
 	// validate row
-	if rowContain(g, row, val) {
+	if rowContains(g, row, val) {
 		return false
 	}
 
 	// validate column
-	if colContain(g, col, val) {
+	if colContains(g, col, val) {
 		return false
 	}
 
 	// validate box
-	if boxContain(g, row, col, val) {
+	if boxContains(g, row, col, val) {
 		return false
 	}
 
 	return true
 }
 
-func rowContain(g *Grid, row int, val byte) bool {
+func rowContains(g *Grid, row int, val byte) bool {
 	for _, cell := range g[row] {
 		if cell == val {
 			return true
@@ -99,7 +91,7 @@ func rowContain(g *Grid, row int, val byte) bool {
 	return false
 }
 
-func colContain(g *Grid, col int, val byte) bool {
+func colContains(g *Grid, col int, val byte) bool {
 	for row := 0; row < N; row++ {
 		cell := g[row][col]
 		if cell == val {
@@ -109,7 +101,7 @@ func colContain(g *Grid, col int, val byte) bool {
 	return false
 }
 
-func boxContain(g *Grid, row, col int, val byte) bool {
+func boxContains(g *Grid, row, col int, val byte) bool {
 	r := int(row/3) * 3
 	c := int(col/3) * 3
 	for i, m := r, r+3; i < m; i++ {
