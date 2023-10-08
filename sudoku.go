@@ -14,7 +14,7 @@ func Valid(g *Grid) bool {
 	return Solve(clone(g))
 }
 
-// Solve solves sudoku Grid inplace and returning true if valid. Otherwise, returns false.
+// Solve solves sudoku Grid inplace and returns true if valid. Otherwise, returns false.
 func Solve(g *Grid) bool { return solve(g, 0, 0) }
 
 func solve(g *Grid, row, col int) bool {
